@@ -1,29 +1,33 @@
 # Creating local dashboard using dash and plotly express
 
+from dash import Dash, dcc, html
+from dash.dependencies import Input, Output
 
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
 import pandas as pd
 import plotly.express as px
-from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 
 
-data = pd.read_csv("avocado.csv")
+file = ("C:\\Users\\Jonathan\\Desktop\\Jupyter_Notebook\\GitHub_Files\\dash_dashboard\\dataset\\avocado.csv")
+
+
+data = pd.read_csv(file)
 
 data["Date"] = pd.to_datetime(data["Date"], format="%Y-%m-%d")
 data.sort_values("Date", inplace=True)
 
-app = dash.Dash(__name__)
+
+app = Dash(__name__)
+
+
 
 selected_region = 'Albany'
-
 
 region_list = data.region.unique()
 region_list.sort()
 
 graph_1_data = data.query("type == 'conventional' and region == 'Albany'")
+
 
 app.layout = html.Div(
     children=[
@@ -53,7 +57,6 @@ def update_figure_1(selected_region):
     return fig_1
 
 
-
 @app.callback(
     Output('graph_2', 'figure'),
     Input('region', 'value'))
@@ -63,5 +66,6 @@ def update_figure_2(selected_region):
         title="Average Price " + selected_region)
 
     return fig_2
+
 
 app.run_server()
